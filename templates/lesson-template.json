@@ -1,0 +1,51 @@
+{
+  "id": "m1-l8",
+  "module_id": "m1",
+  "order": 8,
+  "title": "Judul Lesson Baru",
+  "duration": 20,
+  "runtime": "pyodide",
+  "objectives": [
+    "Tujuan pertama yang bisa diukur",
+    "Tujuan kedua",
+    "Tujuan ketiga"
+  ],
+  "content_md": "## Mulai dari masalah sehari-hari\n\nTulis analogi dulu sebelum masuk ke sintaks.\n\n## Konsep pertama\n\n```python\nnama = \"Salsa\"\nprint(f\"Halo {nama}\")\n```\n\n## Ringkasan\n\n- Poin pertama\n- Poin kedua\n\n## Kesalahan umum\n\n- Kesalahan yang sering terjadi\n",
+  "quiz": [
+    {
+      "id": "m1-l8-q1",
+      "type": "mcq",
+      "question": "Pertanyaan pilihan ganda?",
+      "options": ["Pilihan A", "Pilihan B", "Pilihan C", "Pilihan D"],
+      "answer": 1,
+      "explanation": "Alasan kenapa jawaban itu benar."
+    },
+    {
+      "id": "m1-l8-q2",
+      "type": "true_false",
+      "question": "Pernyataan yang benar atau salah.",
+      "answer": true,
+      "explanation": "Penjelasan singkat."
+    },
+    {
+      "id": "m1-l8-q3",
+      "type": "predict_output",
+      "question": "Apa output kode berikut?",
+      "code": "print(2 + 3)",
+      "answer": "5",
+      "explanation": "Penjelasan singkat."
+    }
+  ],
+  "coding": {
+    "id": "m1-l8-c1",
+    "prompt": "Buat fungsi `contoh(a, b)` yang mengembalikan hasil penjumlahan.",
+    "setup": "",
+    "starter_code": "def contoh(a, b):\n    pass\n",
+    "tests": [
+      { "name": "contoh(1, 2) == 3", "code": "assert contoh(1, 2) == 3" },
+      { "name": "Bekerja untuk angka negatif", "code": "assert contoh(-1, 1) == 0" }
+    ],
+    "hints": ["Gunakan operator +.", "Jangan lupa return."],
+    "solution": "def contoh(a, b):\n    return a + b"
+  }
+}

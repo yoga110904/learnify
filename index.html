@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Learnify — platform belajar Python dari dasar sampai advance, lengkap dengan kuis dan live coding di browser.">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#201a31" media="(prefers-color-scheme: dark)">
+<title>Learnify — Belajar Python dari Nol</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐍</text></svg>">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-ocean.min.css">
+<link rel="stylesheet" href="css/style.css?v=8">
+</head>
+<body>
+<a class="skip-link" href="#main">Lompat ke konten</a>
+
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#/">
+      <span class="brand-mark">L</span>
+      <span class="brand-text">Learnify</span>
+    </a>
+
+    <nav class="nav" id="mainnav" aria-label="Navigasi utama">
+      <a href="#/modules" data-nav="modules">Modul</a>
+      <a href="#/dashboard" data-nav="dashboard">Progres</a>
+      <a href="#/certificates" data-nav="certificates">Sertifikat</a>
+      <a href="#/about" data-nav="about">Tentang</a>
+      <a href="#/admin" data-nav="admin" hidden>Admin</a>
+    </nav>
+
+    <div class="topbar-right">
+      <div class="xp-chip" id="xpChip" title="Total XP">
+        <span class="xp-bolt">⚡</span><span id="xpValue">0</span>
+      </div>
+      <div class="streak-chip" id="streakChip" title="Streak harian">🔥 <span id="streakValue">0</span></div>
+      <button class="icon-btn" id="themeBtn" title="Ganti tema" aria-label="Ganti tema">🌓</button>
+      <button class="icon-btn" id="userBtn" title="Akun" aria-label="Akun">👤</button>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+  <div class="sync-bar" id="syncBar" hidden></div>
+</header>
+
+<main id="main" class="app"></main>
+
+
+<nav class="tabbar" id="tabbar" aria-label="Navigasi bawah">
+  <a href="#/" data-nav="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.5"/></svg>
+    <span>Beranda</span>
+  </a>
+  <a href="#/modules" data-nav="modules">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v14a1.8 1.8 0 0 0-1.8-1.8H5.5A1.5 1.5 0 0 1 4 16.7Z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v14a1.8 1.8 0 0 1 1.8-1.8h4.7a1.5 1.5 0 0 0 1.5-1.5Z"/></svg>
+    <span>Modul</span>
+  </a>
+  <a href="#/dashboard" data-nav="dashboard">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20v-6"/><path d="M12 20V6"/><path d="M19 20v-9"/></svg>
+    <span>Progres</span>
+  </a>
+  <a href="#/certificates" data-nav="certificates">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.2"/><path d="M8.5 13.6 7 21l5-2.4L17 21l-1.5-7.4"/></svg>
+    <span>Sertifikat</span>
+  </a>
+  <a href="#/admin" data-nav="admin" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.4a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.2a1.6 1.6 0 0 0 1.4-1.1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1h.2a2 2 0 0 1 0 4H21a1.6 1.6 0 0 0-1.5 1Z"/></svg>
+    <span>Admin</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div>Learnify · dibuat untuk belajar Python — Materi, kuis, dan live coding jalan langsung di browser lewat Pyodide.</div>
+  <div class="footer-sub">Progres tersimpan di perangkat ini<span id="footerSync"></span>. · <a class="footer-link" href="#/about">Tentang Learnify</a></div>
+</footer>
+
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h3 id="modalTitle">Judul</h3>
+      <button class="icon-btn" data-close-modal aria-label="Tutup">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

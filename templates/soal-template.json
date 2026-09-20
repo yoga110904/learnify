@@ -1,0 +1,25 @@
+[
+  {
+    "id": "contoh-q1",
+    "type": "mcq",
+    "question": "Hasil dari 7 // 2 adalah ...",
+    "options": ["3.5", "3", "4", "1"],
+    "answer": 1,
+    "explanation": "// adalah pembagian bulat, sisa desimalnya dibuang."
+  },
+  {
+    "id": "contoh-q2",
+    "type": "true_false",
+    "question": "String di Python bersifat immutable.",
+    "answer": true,
+    "explanation": "Method string selalu mengembalikan string baru."
+  },
+  {
+    "id": "contoh-q3",
+    "type": "predict_output",
+    "question": "Apa output kode berikut?",
+    "code": "print(\"python\"[1:4])",
+    "answer": "yth",
+    "explanation": "Slicing mengambil index 1, 2, 3. Index 4 tidak ikut."
+  }
+]

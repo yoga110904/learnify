@@ -1,0 +1,16 @@
+{
+  "id": "contoh-c1",
+  "prompt": "Buat fungsi `rata_rata(angka)` yang mengembalikan rata-rata isi list. Kalau listnya kosong, kembalikan `0`.",
+  "setup": "",
+  "starter_code": "def rata_rata(angka):\n    pass\n",
+  "tests": [
+    { "name": "rata_rata([2, 4, 6]) == 4", "code": "assert rata_rata([2, 4, 6]) == 4" },
+    { "name": "List kosong menghasilkan 0", "code": "assert rata_rata([]) == 0" },
+    { "name": "Cek output print()", "code": "assert OUTPUT == \"Halo Dunia\"" }
+  ],
+  "hints": [
+    "List kosong bernilai falsy: if not angka: return 0",
+    "sum(angka) / len(angka)"
+  ],
+  "solution": "def rata_rata(angka):\n    if not angka:\n        return 0\n    return sum(angka) / len(angka)"
+}
