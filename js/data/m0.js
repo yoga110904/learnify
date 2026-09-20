@@ -27,7 +27,7 @@ export default {
           id: 'm0-l1-q2', type: 'true_false',
           question: 'Python hanya bisa dipakai untuk data science.',
           answer: false,
-          explanation: 'Python dipakai untuk web, otomasi, AI, scripting, sampai automation testing.'
+          explanation: 'Python dipakai untuk web, otomasi, scripting, dan terutama data science & AI.'
         },
         {
           id: 'm0-l1-q3', type: 'mcq',

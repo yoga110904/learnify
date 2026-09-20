@@ -5,26 +5,32 @@ import m3 from './m3.js';
 import m4 from './m4.js';
 import m5 from './m5.js';
 import m6 from './m6.js';
+import m7 from './m7.js';
+import m8 from './m8.js';
+import m9 from './m9.js';
+import m10 from './m10.js';
+import m11 from './m11.js';
 
-export const modules = [m0, m1, m2, m3, m4, m5, m6];
+export const modules = [m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11];
 
 export const capstone = {
   id: 'capstone',
   title: 'Proyek Akhir',
   icon: '🏆',
-  tagline: 'Framework Automation Test untuk Web Demo.',
-  desc: 'Bukti nyata seluruh kurikulum: satu repo GitHub yang bisa dipajang di CV.',
-  badge: { id: 'b-capstone', icon: '🏆', name: 'Capstone Master', desc: 'Menyelesaikan proyek akhir' },
+  tagline: 'Bangun satu sistem AI dari nol sampai jalan.',
+  desc: 'Bukti nyata seluruh kurikulum: satu repo GitHub berisi proyek AI yang bisa dipajang di CV.',
+  badge: { id: 'b-capstone', icon: '🏆', name: 'Capstone Master', desc: 'Menyelesaikan proyek akhir AI' },
   checklist: [
-    { id: 'c1', text: 'Struktur proyek rapi (package, requirements.txt, README)' },
-    { id: 'c2', text: 'Page Object Model minimal 3 halaman' },
-    { id: 'c3', text: 'Minimal 10 test UI dengan Playwright' },
-    { id: 'c4', text: 'Minimal 5 test API' },
-    { id: 'c5', text: 'Data test dibaca dari file JSON/CSV' },
-    { id: 'c6', text: 'Fixture & parametrize dipakai' },
-    { id: 'c7', text: 'Logging dan laporan HTML' },
-    { id: 'c8', text: 'Berjalan otomatis di GitHub Actions' },
-    { id: 'c9', text: 'Link repo GitHub sudah diisi di bawah' }
+    { id: 'c1', text: 'Struktur proyek rapi (README, requirements.txt, pemisahan kode & data)' },
+    { id: 'c2', text: 'Eksplorasi data (EDA) — statistik, nilai kosong, minimal 3 visualisasi' },
+    { id: 'c3', text: 'Pembersihan & rekayasa fitur, termasuk minimal satu fitur turunan' },
+    { id: 'c4', text: 'Pemisahan data yang benar, tanpa data leakage' },
+    { id: 'c5', text: 'Minimal 3 model dibandingkan dalam satu tabel hasil' },
+    { id: 'c6', text: 'Evaluasi memakai metrik yang tepat, bukan cuma akurasi' },
+    { id: 'c7', text: 'Pipeline / kode bisa dijalankan ulang dengan hasil yang sama' },
+    { id: 'c8', text: 'Model tersimpan & bisa dipakai (predict.py atau antarmuka sederhana)' },
+    { id: 'c9', text: 'README menjelaskan masalah, metode, hasil, dan keterbatasan' },
+    { id: 'c10', text: 'Link repo GitHub sudah diisi di bawah' }
   ]
 };
 

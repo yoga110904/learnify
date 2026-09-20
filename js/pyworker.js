@@ -5,6 +5,17 @@ const PYODIDE_URL = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`
 
 let pyodide = null;
 let ready = false;
+const paketTerpasang = new Set();
+
+/** Muat paket ilmiah (numpy, pandas, scikit-learn, ...) sekali saja per sesi. */
+async function pastikanPaket(daftar) {
+  const perlu = (daftar || []).filter((p) => p && !paketTerpasang.has(p));
+  if (!perlu.length) return;
+  self.postMessage({ type: 'status', text: `Memuat ${perlu.join(', ')}…` });
+  await pyodide.loadPackage(perlu);
+  perlu.forEach((p) => paketTerpasang.add(p));
+  self.postMessage({ type: 'status', text: `${perlu.join(', ')} siap` });
+}
 
 const DRIVER = String.raw`
 import ast, io, json, sys, builtins, contextlib, traceback, inspect, linecache
@@ -108,6 +119,8 @@ self.onmessage = async (ev) => {
   if (msg.type === 'run') {
     try {
       await boot();
+      await pastikanPaket(msg.packages);
+      self.postMessage({ type: 'status', text: 'Menjalankan kode…' });
       const payload = JSON.stringify({
         code: msg.code || '',
         tests: msg.tests || [],

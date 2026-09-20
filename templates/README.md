@@ -43,6 +43,7 @@ jadi tulis yang benar-benar menjelaskan, bukan cuma mengulang jawaban.
 | Field | Keterangan |
 |---|---|
 | `prompt` | Soal, boleh memakai Markdown |
+| `packages` | Library yang perlu dimuat Pyodide, mis. `["numpy"]`, `["pandas"]`, `["scikit-learn", "numpy"]` |
 | `setup` | Kode yang dijalankan **sebelum** kode siswa (untuk menyediakan fungsi/modul bantu) |
 | `starter_code` | Isi awal editor |
 | `tests` | Array `{ name, code }` — `name` tampil ke siswa, `code` berisi `assert` |

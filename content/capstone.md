@@ -1,63 +1,84 @@
-## Framework Automation Test untuk Web Demo
+## Proyek Akhir: Sistem AI Sederhana
 
-Selamat — kamu sudah menuntaskan seluruh kurikulum. Sekarang saatnya membuktikannya lewat satu proyek utuh yang bisa dipajang di CV.
+Selamat — kamu sudah menuntaskan jalur Python → Data → Machine Learning → Neural Network → LLM.
+Sekarang saatnya membangun satu sistem utuh yang bisa dipajang di CV.
 
-## Yang harus dibuat
+## Pilih satu jalur
 
-Sebuah framework automation testing untuk sebuah situs demo publik. Pilih salah satu:
+### 🅰️ Klasifikasi End-to-End
+Bangun model prediksi dari dataset tabel.
 
-- [saucedemo.com](https://www.saucedemo.com) — toko online, cocok untuk alur login → keranjang → checkout
-- [the-internet.herokuapp.com](https://the-internet.herokuapp.com) — kumpulan skenario UI yang menantang
-- [reqres.in](https://reqres.in) atau [jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com) — untuk bagian API
+- Dataset: Titanic, Telco Churn, Heart Disease, atau data yang kamu kumpulkan sendiri
+- Analisis data (EDA) → pembersihan → rekayasa fitur → pemodelan → evaluasi
+- Bandingkan minimal 3 model, laporkan metrik yang sesuai (bukan cuma akurasi)
+- Bungkus dalam `Pipeline` dan simpan dengan `joblib`
+
+### 🅱️ Mini RAG Chatbot
+Chatbot yang menjawab dari dokumenmu sendiri.
+
+- Kumpulkan 10–50 dokumen (PDF, Markdown, catatan kuliah)
+- Chunking → embedding → simpan di vector store (Chroma/FAISS)
+- Retrieval + prompt yang mewajibkan jawaban bersumber dari konteks
+- Antarmuka sederhana (Streamlit atau CLI)
+
+### 🅲 Neural Network dari Nol
+Klasifikasi gambar tanpa framework deep learning.
+
+- Dataset: MNIST atau Fashion-MNIST
+- Bangun jaringan multi-layer memakai **NumPy saja**
+- Implementasikan forward, backward, mini-batch, dan optimizer
+- Target minimal 90% akurasi pada data uji
 
 ## Struktur proyek yang disarankan
 
 ```
-qa-framework/
+proyek-ai/
 ├── README.md
 ├── requirements.txt
-├── pytest.ini
-├── conftest.py
-├── pages/
-│   ├── base_page.py
-│   ├── login_page.py
-│   ├── inventory_page.py
-│   └── cart_page.py
-├── tests/
-│   ├── ui/
-│   │   ├── test_login.py
-│   │   └── test_checkout.py
-│   └── api/
-│       └── test_users.py
 ├── data/
-│   └── users.json
-├── utils/
-│   └── logger.py
-└── .github/workflows/test.yml
+│   ├── raw/
+│   └── processed/
+├── notebooks/
+│   └── 01_eksplorasi.ipynb
+├── src/
+│   ├── data.py          # memuat & membersihkan
+│   ├── features.py      # rekayasa fitur
+│   ├── model.py         # melatih & evaluasi
+│   └── predict.py       # inferensi
+├── models/
+│   └── model.pkl
+└── app.py               # antarmuka (opsional)
 ```
 
 ## Checklist penilaian
 
 Centang tiap item di panel sebelah setelah benar-benar selesai. Semua tercentang = sertifikat kurikulum terbuka.
 
-1. **Struktur proyek rapi** — ada package, `requirements.txt`, dan `README.md` berisi cara menjalankan.
-2. **Page Object Model minimal 3 halaman** — selector jadi konstanta, tidak ada `assert` di dalam page object.
-3. **Minimal 10 test UI** dengan Playwright, termasuk jalur gagal.
-4. **Minimal 5 test API** — periksa status code, field wajib, dan jalur negatif.
-5. **Data test dari file JSON/CSV** — kredensial dan data uji tidak ditulis keras di dalam test.
-6. **Fixture & parametrize dipakai** — fixture di `conftest.py`, minimal satu test `parametrize`.
-7. **Logging dan laporan HTML** — `pytest --html=report.html` menghasilkan laporan.
-8. **Berjalan otomatis di GitHub Actions** — badge hijau di README.
-9. **Link repo GitHub dikumpulkan** — tempel di kolom yang tersedia.
+1. **Struktur proyek rapi** — ada `README.md`, `requirements.txt`, dan pemisahan kode/data.
+2. **Eksplorasi data (EDA)** — statistik deskriptif, nilai kosong, distribusi, minimal 3 visualisasi.
+3. **Pembersihan & rekayasa fitur** — penanganan nilai kosong, encoding, penyamaan skala, minimal satu fitur turunan.
+4. **Pemisahan data yang benar** — train/test split (atau cross-validation), **tanpa data leakage**.
+5. **Minimal 3 model dibandingkan** — lengkap dengan tabel hasilnya.
+6. **Evaluasi memakai metrik yang tepat** — bukan cuma akurasi; jelaskan kenapa metrik itu dipilih.
+7. **Pipeline / kode bisa diulang** — orang lain bisa menjalankan ulang dan dapat hasil yang sama.
+8. **Model tersimpan & bisa dipakai** — ada `predict.py` atau antarmuka sederhana.
+9. **README menjelaskan hasil** — masalah, data, metode, hasil, keterbatasan.
+10. **Link repo GitHub dikumpulkan** — tempel di kolom yang tersedia.
 
 ## Tips supaya nilainya bagus
 
-- **README itu etalase.** Tulis: apa yang ditest, cara menjalankan, struktur folder, dan screenshot laporan.
-- **Commit bertahap** dengan pesan bermakna, bukan satu commit "final" raksasa.
-- **Test harus hijau di mesin orang lain.** Jangan bergantung pada file atau path yang cuma ada di laptopmu.
-- **Tulis test yang gagal dengan benar.** Coba rusak satu selector dan pastikan laporannya jelas menunjukkan penyebabnya.
-- **Jangan lupa `.gitignore`** — `venv/`, `__pycache__/`, `.env`, `report.html`.
+- **README itu etalase.** Tulis masalahnya, angkanya, dan grafiknya — bukan cuma cara install.
+- **Laporkan keterbatasan.** "Model ini lemah pada kelas minoritas karena datanya cuma 3%" menunjukkan kamu paham, bukan kelemahan.
+- **Jangan kejar akurasi buta.** Model sederhana yang dipahami lebih berharga daripada tumpukan model yang tidak kamu mengerti.
+- **Pastikan `random_state` dipasang** di semua tempat supaya hasilnya bisa diulang.
+- **Jangan commit dataset besar.** Sertakan skrip pengunduhnya.
+- **Periksa data leakage sekali lagi.** Skor yang terlalu bagus hampir selalu berarti ada kebocoran.
 
 ## Setelah selesai
 
-Kamu sudah punya: dasar Python yang kuat, OOP, fitur advance, dan framework testing sungguhan di GitHub. Langkah berikutnya yang masuk akal: CI/CD lebih dalam, performance testing (k6/Locust), atau Playwright dengan visual regression.
+Kamu sudah punya: Python yang kuat, kemampuan mengolah data, pemahaman ML dan neural network sampai ke tingkat matematikanya, plus pengalaman membangun sistem LLM. Langkah berikutnya yang masuk akal:
+
+- **PyTorch / TensorFlow** — sekarang framework-nya akan terasa mudah karena kamu tahu isinya
+- **Computer vision** (CNN) atau **NLP** (transformer) untuk pendalaman
+- **MLOps** — deployment, monitoring, dan menjaga model tetap sehat di produksi
+- **Kaggle** — berkompetisi untuk mengasah kemampuan di data nyata

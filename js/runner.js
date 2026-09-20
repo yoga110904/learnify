@@ -1,6 +1,6 @@
 /* Learnify — manajer Pyodide worker (boot, timeout, restart). */
 const WORKER_URL = new URL('./pyworker.js', import.meta.url);
-const TIMEOUT_MS = 15000;
+const TIMEOUT_MS = 25000;   // diperpanjang otomatis selama worker masih mengabari progres
 
 let worker = null;
 let booting = null;
@@ -26,12 +26,20 @@ function spawn() {
   worker = new Worker(WORKER_URL, { type: 'classic' });
   worker.onmessage = (ev) => {
     const m = ev.data || {};
-    if (m.type === 'status') emit('booting', m.text);
+    if (m.type === 'status') {
+      emit('booting', m.text);
+      // unduhan paket bisa lama — perpanjang batas waktu selama worker masih mengabari
+      pending.forEach((p) => {
+        clearTimeout(p.timer);
+        p.timer = setTimeout(p.onTimeout, TIMEOUT_MS);
+      });
+    }
     else if (m.type === 'ready') emit('ready', 'Python siap');
     else if (m.type === 'boot-error') emit('error', 'Gagal memuat Python: ' + m.error);
     else if (m.type === 'result') {
       const p = pending.get(m.id);
       if (p) { clearTimeout(p.timer); pending.delete(m.id); p.resolve(m.result); }
+      if (!pending.size) emit('ready', 'Python siap');
     }
   };
   worker.onerror = (e) => emit('error', 'Worker error: ' + (e.message || 'unknown'));
@@ -67,14 +75,13 @@ function hardReset(reason) {
  * Jalankan kode user + test.
  * @returns {Promise<{stdout:string,error:string|null,tests:Array,timeout?:boolean}>}
  */
-export function runPython({ code, tests = [], setup = '', stdin = [] }) {
+export function runPython({ code, tests = [], setup = '', stdin = [], packages = [] }) {
   if (!worker) warmUp();
   const id = ++seq;
   return new Promise((resolve) => {
-    const timer = setTimeout(() => {
-      hardReset('⏱️ Waktu eksekusi habis (15 detik). Cek apakah ada infinite loop — misalnya `while` yang kondisinya tidak pernah selesai.');
-    }, TIMEOUT_MS);
-    pending.set(id, { resolve, timer });
-    worker.postMessage({ type: 'run', id, code, tests, setup, stdin });
+    const onTimeout = () => hardReset('⏱️ Waktu eksekusi habis. Cek apakah ada infinite loop — misalnya `while` yang kondisinya tidak pernah selesai.');
+    const timer = setTimeout(onTimeout, TIMEOUT_MS);
+    pending.set(id, { resolve, timer, onTimeout });
+    worker.postMessage({ type: 'run', id, code, tests, setup, stdin, packages });
   });
 }

@@ -1,7 +1,7 @@
 /* ============================================================
    Learnify — aplikasi utama (router + semua view)
    ============================================================ */
-import { modules, capstone, getModule, getLessonById, flatLessons, nextLesson, totalLessons, baseLesson } from './data/index.js';
+import { modules, capstone, getModule, getLessonById, flatLessons, nextLesson, baseLesson } from './data/index.js';
 import * as Content from './content-store.js';
 import * as Store from './store.js';
 import { runPython, warmUp, onRunnerState } from './runner.js';
@@ -390,10 +390,11 @@ function viewLanding() {
   app.innerHTML = `
     <section class="hero">
       <div>
-        <span class="pill">🐍 Kurikulum Python · Dasar → Advance</span>
-        <h1>Belajar Python sampai bisa <span class="grad">automation testing</span>.</h1>
-        <p class="lead">39 lesson, 37 tantangan live coding, dan 6 ujian modul. Semua kode Python
-        dijalankan langsung di browser — tidak perlu install apa pun.</p>
+        <span class="pill">🐍 Kurikulum Python · Dasar → AI</span>
+        <h1>Belajar Python sampai bisa <span class="grad">bikin AI</span>.</h1>
+        <p class="lead">${flatLessons.length} lesson, ${flatLessons.filter((l) => l.coding).length} tantangan live coding, dan ${modules.filter((m) => m.exam).length} ujian modul —
+        dari sintaks dasar sampai neural network dan LLM. Semua kode jalan langsung di browser,
+        lengkap dengan NumPy, pandas, dan scikit-learn.</p>
         <div class="hero-cta">
           ${belumMasuk
             ? `<a class="btn btn-primary" href="#/login">Masuk dengan Google →</a>`
@@ -408,8 +409,8 @@ function viewLanding() {
             <div class="progress" style="margin-top:6px"><i style="width:${pct}%"></i></div>
           </div>` : ''}
         <div class="hero-stats">
-          <div><b>7</b><span>modul</span></div>
-          <div><b>${totalLessons}</b><span>lesson</span></div>
+          <div><b>${modules.length}</b><span>modul</span></div>
+          <div><b>${flatLessons.length}</b><span>lesson</span></div>
           <div><b>${d.xp || 0}</b><span>XP kamu</span></div>
           <div><b>${(d.streak && d.streak.count) || 0}</b><span>hari streak</span></div>
         </div>
@@ -449,14 +450,14 @@ function viewLanding() {
         <p>Lesson berikutnya terbuka setelah kuis ≥70% dan semua test coding lolos.</p></div>
       <div class="feature"><div class="ic">⚡</div><h3>XP, streak & badge</h3>
         <p>Kumpulkan XP tiap langkah, jaga streak harian, dan kumpulkan badge tiap modul.</p></div>
-      <div class="feature"><div class="ic">🧪</div><h3>Spesialisasi QA</h3>
-        <p>Modul 6 khusus automation testing: pytest, fixture, mocking, API, dan Playwright.</p></div>
+      <div class="feature"><div class="ic">🧠</div><h3>Jalur ke AI</h3>
+        <p>NumPy, pandas, machine learning, neural network dari nol, sampai LLM dan RAG.</p></div>
       <div class="feature"><div class="ic">📱</div><h3>Jalan di HP</h3>
         <p>Tampilan menyesuaikan layar kecil, jadi bisa lanjut belajar sambil rebahan.</p></div>
     </div>
 
     <h2 class="section-title">Peta kurikulum</h2>
-    <p class="section-sub">Dari "apa itu variabel" sampai framework automation test yang jalan di GitHub Actions.</p>
+    <p class="section-sub">Dari "apa itu variabel" sampai melatih neural network dan membangun sistem RAG.</p>
     <div class="module-grid">${modules.map(moduleCardHTML).join('')}</div>
     <div style="margin-top:16px">${capstoneCardHTML()}</div>
   `;
@@ -836,7 +837,8 @@ function renderCoding(host, coding, opts = {}) {
       code: cm.getValue(),
       setup: coding.setup || '',
       tests: withTests ? coding.tests : [],
-      stdin: coding.stdin || []
+      stdin: coding.stdin || [],
+      packages: coding.packages || []
     });
 
     btn.disabled = false; btn.textContent = label;
@@ -1072,6 +1074,7 @@ async function viewLesson(id) {
             <div class="pane-body pane-scroll">
               <div class="md">${md(c.prompt)}</div>
               ${lesson.runtime === 'pyodide-limited' ? '<div class="hint-box">⚠️ Lesson ini punya keterbatasan di browser. Yang diuji di sini adalah logikanya; versi lengkapnya dijalankan di komputermu.</div>' : ''}
+              ${(c.packages || []).length ? `<div class="hint-box">📦 Lesson ini memakai <b>${c.packages.join(', ')}</b>. Pemuatan pertama butuh beberapa detik — setelah itu langsung cepat.</div>` : ''}
               <hr class="hr">
               <div class="muted" style="font-size:.84rem">
                 <b>Test case yang akan dijalankan:</b>
@@ -1296,8 +1299,9 @@ function viewDashboard() {
     const aktif = (mapMenit[k] || 0) > 0;
     const nanti = tgl > new Date() && k !== hariIni;
     return `
-      <div class="day ${aktif ? 'done' : ''} ${k === hariIni ? 'today' : ''} ${nanti ? 'future' : ''}">
-        <i>${aktif ? '✓' : ''}</i>
+      <div class="day ${aktif ? 'done' : ''} ${k === hariIni ? 'today' : ''} ${nanti ? 'future' : ''}"
+           title="${label}, ${tgl.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' })}${aktif ? ` · ${mapMenit[k]} menit belajar` : ''}">
+        <i>${tgl.getDate()}</i>
         <span>${label}</span>
       </div>`;
   }).join('');
@@ -1402,7 +1406,7 @@ function viewDashboard() {
       </div>
       <div class="perf-card" style="--card-tint:var(--tint-mint)">
         <div class="perf-icon">✅</div>
-        <b>${doneLessons}/${totalLessons}</b>
+        <b>${doneLessons}/${flatLessons.length}</b>
         <span>Lesson selesai</span>
         <span class="delta flat">${codingDone} coding lolos</span>
       </div>
@@ -1513,11 +1517,11 @@ function viewCertificate(which) {
     <div class="cert">
       <div class="c-kicker">Sertifikat Penyelesaian</div>
       <h2>${isFinal ? 'Kurikulum Python: Dasar → Advance' : esc(m.title)}</h2>
-      <p class="muted" style="margin:0">${isFinal ? 'Learnify — Python untuk Automation Testing' : esc(m.tagline)}</p>
+      <p class="muted" style="margin:0">${isFinal ? 'Learnify — Python untuk AI' : esc(m.tagline)}</p>
       <div class="c-name">${esc(nama)}</div>
       <p class="muted" style="max-width:52ch;margin:0 auto">
         ${isFinal
-          ? `telah menyelesaikan seluruh ${modules.length} modul, ${totalLessons} lesson, seluruh ujian modul, dan proyek akhir berupa framework automation test.`
+          ? `telah menyelesaikan seluruh ${modules.length} modul, ${flatLessons.length} lesson, seluruh ujian modul, dan proyek akhir berupa sistem AI.`
           : `telah menyelesaikan seluruh ${m.lessons.length} lesson dan lulus ujian modul dengan skor ${Store.getExam(m.id).score}%.`}
       </p>
       <div style="font-size:3rem;margin-top:18px">${isFinal ? '🎖️' : m.badge.icon}</div>
@@ -1632,7 +1636,7 @@ function viewAbout() {
 
       <h3>Catatan runtime</h3>
       <p>Beberapa lesson ditandai <span class="pill warn">runtime terbatas</span> — misalnya <code>requests</code>
-      dan Playwright yang butuh jaringan atau browser sungguhan. Di lesson itu yang diuji adalah logikanya;
+      dan panggilan API LLM yang butuh jaringan. Di lesson itu yang diuji adalah logikanya;
       versi lengkapnya dikerjakan di komputermu sendiri.</p>
 
       <h3>Data kamu</h3>
@@ -1983,7 +1987,7 @@ async function viewAdmin() {
     const b = $('#admTest');
     b.disabled = true; b.innerHTML = '<span class="loader"></span> Menjalankan…';
     warmUp();
-    const res = await runPython({ code: c.solution || '', setup: c.setup || '', tests: c.tests || [] });
+    const res = await runPython({ code: c.solution || '', setup: c.setup || '', tests: c.tests || [], packages: c.packages || [] });
     b.disabled = false; b.textContent = '▶︎ Tes solusi coding';
     const lolos = res.tests.length && res.tests.every((t) => t.pass);
     $('#admStatus').innerHTML = `

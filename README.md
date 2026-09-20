@@ -1,6 +1,6 @@
-# 🐍 Learnify — Platform Belajar Python
+# 🐍 Learnify — Platform Belajar Python & AI
 
-Platform belajar Python dari nol sampai automation testing, dengan gaya DataCamp/Dicoding.
+Platform belajar Python dari nol sampai bikin AI, dengan gaya DataCamp/Dicoding.
 Materi → kuis → **live coding Python langsung di browser** → ujian modul → sertifikat.
 
 Semua vanilla **HTML + CSS + JavaScript**. Tanpa build step, tanpa backend, siap di-deploy ke GitHub Pages.
@@ -9,11 +9,12 @@ Semua vanilla **HTML + CSS + JavaScript**. Tanpa build step, tanpa backend, siap
 
 ## ✨ Fitur
 
-- **39 lesson** dalam 7 modul + proyek akhir, semua berbahasa Indonesia
-- **37 tantangan live coding** yang dinilai otomatis oleh test case
+- **65 lesson** dalam 12 modul + proyek akhir, semua berbahasa Indonesia
+- **64 tantangan live coding** yang dinilai otomatis oleh test case
+- **NumPy, pandas, dan scikit-learn jalan di browser** — dimuat otomatis saat lesson yang butuh dibuka
 - **Python asli di browser** lewat [Pyodide](https://pyodide.org) (CPython → WebAssembly), berjalan di Web Worker dengan timeout 15 detik
 - Editor **CodeMirror** dengan syntax highlighting Python
-- **6 ujian modul** (teori acak + live coding), lulus ≥ 75%
+- **11 ujian modul** (teori acak + live coding), lulus ≥ 75%
 - **Gamifikasi**: XP, streak harian, badge per modul
 - **Sertifikat** per modul dan sertifikat kurikulum (bisa dicetak / simpan PDF)
 - **Login Google wajib** — semua progres tersimpan per akun di **Firebase Firestore**
@@ -83,8 +84,16 @@ dan enak dibaca.
 | M3 | Menengah | 5 |
 | M4 | Object-Oriented Programming | 6 |
 | M5 | Advance | 7 |
-| M6 | Testing & Automation (spesialisasi QA) | 5 |
-| — | Proyek Akhir (capstone) | 1 |
+| M6 | NumPy — Fondasi Komputasi AI | 5 |
+| M7 | Pandas — Mengolah Data | 5 |
+| M8 | Matematika & Statistik untuk AI | 5 |
+| M9 | Machine Learning Dasar | 6 |
+| M10 | Neural Network dari Nol | 5 |
+| M11 | LLM & AI Generatif | 5 |
+| — | Proyek Akhir (capstone AI) | 1 |
+
+Alurnya: **Python dasar → struktur data → OOP → fitur advance → NumPy/pandas → matematika →
+machine learning → neural network dari nol → LLM & RAG → proyek akhir.**
 
 ## 🚀 Menjalankan di komputer
 
@@ -260,5 +269,13 @@ Di dalam kode test tersedia variabel bantu hasil eksekusi kode user:
 
 ## ⚠️ Catatan runtime
 
-Lesson bertanda `runtime: 'pyodide-limited'` (asyncio, `requests`, Playwright) punya keterbatasan
+Lesson bertanda `runtime: 'pyodide-limited'` (asyncio, panggilan API LLM) punya keterbatasan
 di browser — yang diuji logikanya saja. Versi lengkapnya dikerjakan di komputer sendiri.
+
+Lesson yang butuh library ilmiah mencantumkannya di `coding.packages`, misalnya
+`["numpy"]`, `["pandas"]`, atau `["scikit-learn", "numpy"]`. Pyodide mengunduhnya otomatis saat
+pertama dipakai (beberapa detik), lalu menyimpannya untuk sisa sesi. Batas waktu eksekusi
+diperpanjang otomatis selama proses pengunduhan berlangsung.
+
+PyTorch dan TensorFlow tidak tersedia di Pyodide — karena itu Modul 10 sengaja membangun
+neural network memakai NumPy saja, yang justru cara terbaik memahami isinya.

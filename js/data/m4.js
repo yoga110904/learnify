@@ -2,9 +2,9 @@ export default {
   id: 'm4',
   title: 'Object-Oriented Programming',
   icon: '🧩',
-  tagline: 'Class, inheritance, polymorphism, Page Object Model.',
-  desc: 'Cara menyusun program besar agar tetap rapi — plus jembatan ke automation testing.',
-  badge: { id: 'b-m4', icon: '🧩', name: 'Arsitek Objek', desc: 'Menguasai OOP sampai Page Object Model' },
+  tagline: 'Class, inheritance, polymorphism, pola fit/transform.',
+  desc: 'Cara menyusun program besar agar tetap rapi — plus pola class yang dipakai semua library AI.',
+  badge: { id: 'b-m4', icon: '🧩', name: 'Arsitek Objek', desc: 'Menguasai OOP sampai pola library AI' },
   lessons: [
     {
       id: 'm4-l1',
@@ -145,27 +145,33 @@ export default {
     },
     {
       id: 'm4-l6',
-      title: 'Page Object Model (jembatan ke QA)',
+      title: 'Class untuk Pipeline AI',
       duration: 25,
-      objectives: ['Memahami masalah selector yang tersebar', 'Menyusun class per halaman', 'Menguji alur dengan driver palsu'],
+      objectives: ['Memahami kenapa library AI memakai class', 'Menerapkan kontrak fit/transform', 'Mencegah data leakage lewat parameter yang tersimpan'],
       quiz: [
-        { id: 'm4-l6-q1', type: 'mcq', question: 'Masalah utama yang diselesaikan Page Object Model adalah ...', options: ['Test jalan lebih cepat', 'Selector UI tersebar di banyak file test', 'Browser jadi lebih ringan', 'Mengurangi jumlah test'], answer: 1,
-          explanation: 'Dengan POM, perubahan selector cukup diperbaiki di satu tempat.' },
-        { id: 'm4-l6-q2', type: 'mcq', question: 'Manakah yang TIDAK boleh ada di dalam page object?', options: ['Selector', 'Method aksi', 'Assertion', 'Referensi driver'], answer: 2,
-          explanation: 'Assertion adalah tanggung jawab file test, bukan page object.' },
-        { id: 'm4-l6-q3', type: 'true_false', question: 'Karena duck typing, kita bisa menguji page object dengan driver palsu tanpa browser.', answer: true,
-          explanation: 'Objek palsu cukup punya method dengan nama yang sama.' }
+        { id: 'm4-l6-q1', type: 'mcq', question: 'Kenapa scikit-learn memakai class, bukan fungsi biasa?', options: ['Supaya kodenya panjang', 'Karena fit menghasilkan parameter yang harus diingat untuk dipakai lagi', 'Karena Python mewajibkannya', 'Supaya lebih cepat'], answer: 1,
+          explanation: 'Objek jadi tempat menyimpan hasil belajar seperti mean_ dan scale_.' },
+        { id: 'm4-l6-q2', type: 'mcq', question: 'Dalam kontrak scikit-learn, method yang MENYIMPAN parameter ke self adalah ...', options: ['transform', 'predict', 'fit', 'score'], answer: 2,
+          explanation: 'transform dan predict hanya menerapkan, tidak belajar.' },
+        { id: 'm4-l6-q3', type: 'mcq', question: 'Atribut dengan akhiran garis bawah seperti mean_ menandakan ...', options: ['Atribut privat', 'Nilai hasil belajar dari data', 'Konstanta', 'Atribut class'], answer: 1,
+          explanation: 'Konvensi ini membedakan hasil pelatihan dari pengaturan.' },
+        { id: 'm4-l6-q4', type: 'true_false', question: 'Menjalankan fit() pada data uji termasuk data leakage.', answer: true,
+          explanation: 'Data uji hanya boleh di-transform memakai parameter dari data latih.' }
       ],
       coding: {
-        prompt: 'Buat class `LoginPage(driver)` dengan method `login(user, pw)` yang memanggil driver secara berurutan:\n\n1. `driver.isi("#user", user)`\n2. `driver.isi("#pw", pw)`\n3. `driver.klik("#submit")`',
-        starter_code: 'class LoginPage:\n    INPUT_USER = "#user"\n    INPUT_PW = "#pw"\n    BTN_SUBMIT = "#submit"\n\n    # lengkapi __init__ dan login\n',
+        packages: ['numpy'],
+        prompt: 'Buat class `ScalerSederhana` yang meniru `StandardScaler` scikit-learn:\n\n- `fit(X)` → simpan `self.mean_` dan `self.scale_` (std per kolom; std 0 diganti 1), lalu kembalikan `self`\n- `transform(X)` → kembalikan `(X - mean_) / scale_`; kalau `fit` belum dipanggil, `raise ValueError`\n- `fit_transform(X)` → jalan pintas fit lalu transform',
+        starter_code: 'import numpy as np\n\nclass ScalerSederhana:\n    def __init__(self):\n        self.mean_ = None\n        self.scale_ = None\n\n    # lengkapi fit, transform, dan fit_transform\n',
         tests: [
-          { name: 'Urutan aksi benar', code: 'class DriverPalsu:\n    def __init__(self):\n        self.aksi = []\n    def isi(self, sel, teks):\n        self.aksi.append(("isi", sel, teks))\n    def klik(self, sel):\n        self.aksi.append(("klik", sel))\n\nd = DriverPalsu()\nLoginPage(d).login("a", "b")\nassert d.aksi == [("isi", "#user", "a"), ("isi", "#pw", "b"), ("klik", "#submit")], d.aksi' },
-          { name: 'Driver disimpan sebagai atribut', code: 'class D2:\n    def isi(self, s, t): pass\n    def klik(self, s): pass\nd2 = D2()\nassert LoginPage(d2).driver is d2' },
-          { name: 'Memakai konstanta selector', code: 'assert LoginPage.INPUT_USER == "#user" and LoginPage.BTN_SUBMIT == "#submit"' }
+          { name: 'fit_transform menghasilkan mean 0', code: 'import numpy as np\nX = np.array([[1., 100.], [2., 200.], [3., 300.]])\nh = ScalerSederhana().fit_transform(X)\nassert np.allclose(h.mean(axis=0), 0, atol=1e-9)' },
+          { name: 'fit_transform menghasilkan std 1', code: 'import numpy as np\nX = np.array([[1., 100.], [2., 200.], [3., 300.]])\nh = ScalerSederhana().fit_transform(X)\nassert np.allclose(h.std(axis=0), 1, atol=1e-9)' },
+          { name: 'fit mengembalikan self agar bisa dirangkai', code: 'import numpy as np\nX = np.array([[1.], [2.], [3.]])\ns = ScalerSederhana()\nassert s.fit(X) is s' },
+          { name: 'transform sebelum fit -> ValueError', code: 'import numpy as np\ntry:\n    ScalerSederhana().transform(np.array([[1.]]))\n    raise AssertionError("Seharusnya ValueError")\nexcept ValueError:\n    pass' },
+          { name: 'Data uji memakai parameter data latih', code: 'import numpy as np\ntrain = np.array([[0.], [10.]])\ns = ScalerSederhana().fit(train)\nassert np.allclose(s.transform(np.array([[5.]])), [[0.]])' },
+          { name: 'Kolom konstan tidak menghasilkan NaN', code: 'import numpy as np\nX = np.array([[5., 1.], [5., 2.]])\nassert not np.isnan(ScalerSederhana().fit_transform(X)).any()' }
         ],
-        hints: ['__init__(self, driver) menyimpan self.driver = driver.', 'Di login(), pakai konstanta class: self.driver.isi(self.INPUT_USER, user)'],
-        solution: 'class LoginPage:\n    INPUT_USER = "#user"\n    INPUT_PW = "#pw"\n    BTN_SUBMIT = "#submit"\n\n    def __init__(self, driver):\n        self.driver = driver\n\n    def login(self, user, pw):\n        self.driver.isi(self.INPUT_USER, user)\n        self.driver.isi(self.INPUT_PW, pw)\n        self.driver.klik(self.BTN_SUBMIT)\n        return self'
+        hints: ['Di fit: self.mean_ = X.mean(axis=0), lalu std = X.std(axis=0).', 'Ganti std nol: self.scale_ = np.where(std == 0, 1, std)', 'Di transform, cek dulu if self.mean_ is None lalu raise ValueError.'],
+        solution: 'import numpy as np\n\nclass ScalerSederhana:\n    def __init__(self):\n        self.mean_ = None\n        self.scale_ = None\n\n    def fit(self, X):\n        self.mean_ = X.mean(axis=0)\n        std = X.std(axis=0)\n        self.scale_ = np.where(std == 0, 1, std)\n        return self\n\n    def transform(self, X):\n        if self.mean_ is None:\n            raise ValueError("Panggil fit() dulu sebelum transform()")\n        return (X - self.mean_) / self.scale_\n\n    def fit_transform(self, X):\n        return self.fit(X).transform(X)'
       }
     }
   ],
