@@ -20,7 +20,7 @@ Semua vanilla **HTML + CSS + JavaScript**. Tanpa build step, tanpa backend, siap
 - **Login Google wajib** — semua progres tersimpan per akun di **Firebase Firestore**
 - **Halaman admin** untuk menulis & mengubah materi langsung dari browser, lengkap dengan template
 - **Responsive**: nyaman di laptop maupun HP, lengkap dengan bottom tab bar di layar kecil
-- Tema **terang & gelap** — putih bersih dengan aksen pastel (light) / deep plum (dark), ikut preferensi sistem lalu bisa dikunci manual lewat tombol 🌙/☀️
+- Tema **terang & gelap** — putih bersih / slate gelap, keduanya beraksen teal dan sengaja dijaga kontrasnya supaya tidak menyilaukan. Ikut preferensi sistem, bisa dikunci manual lewat tombol 🌙/☀️
 
 ## 🧭 Pola UI/UX
 
@@ -39,6 +39,13 @@ Layout-nya mengikuti pola aplikasi belajar mobile-first:
 Angka statistiknya nyata, dihitung dari `duration` lesson yang selesai dan timestamp penyelesaiannya
 — bukan data contoh.
 
+**Halaman lesson** (`#/lesson/m1-l3`)
+- **Sidebar daftar materi** di kiri: kartu "Modul aktif" berisi progress, lalu daftar lesson
+  bernomor (`2.1`, `2.2`, …) — selesai bercentang teal, yang aktif bergaris teal di kiri,
+  yang belum terbuka digembok. Ujian modul ada di bagian bawah.
+- Di bawah 1080px sidebar jadi laci yang dibuka lewat tombol **☰ Daftar materi**
+- Konten di kanan: tab **Materi → Kuis → Live Coding**
+
 **Halaman modul** (`#/module/m1`)
 - Hero bertint pastel dengan ikon modul besar dan pill ringkasan
 - Kartu konten yang menimpa hero (ada "grip" seperti bottom sheet) berisi judul, deskripsi, progress
@@ -55,8 +62,8 @@ Angka statistiknya nyata, dihitung dari `duration` lesson yang selesai dan times
 
 Seluruh warna diatur lewat CSS variable di bagian atas [`css/style.css`](css/style.css):
 
-- `:root, [data-theme="light"]` → palet terang (latar putih, aksen pastel)
-- `[data-theme="dark"]` → palet gelap (deep plum)
+- `:root, [data-theme="light"]` → palet terang (putih, aksen teal)
+- `[data-theme="dark"]` → palet gelap (slate, aksen teal yang sama)
 
 Yang paling sering diubah:
 
@@ -64,9 +71,9 @@ Yang paling sering diubah:
 |---|---|
 | `--bg` / `--bg-grad` | latar halaman — light memakai putih polos (`none`), dark memakai gradient |
 | `--surface` / `--surface-2` | warna kartu (pakai transparansi + blur) |
-| `--brand` / `--brand-2` | warna tombol & aksen utama |
-| `--tint-lilac` … `--tint-sky` | pastel untuk kartu modul, stat, dan badge |
-| `--radius` / `--radius-lg` / `--pill` | tingkat kebulatan sudut |
+| `--brand` / `--brand-soft` | warna tombol & aksen utama (teal) + versi latarnya |
+| `--tint-1` … `--tint-7` | tint sangat tipis untuk kartu modul, stat, dan badge |
+| `--radius` / `--radius-lg` / `--radius-btn` | tingkat kebulatan sudut |
 
 Tema awal mengikuti pengaturan sistem; begitu tombol tema ditekan, pilihannya disimpan di
 `localStorage` dan tidak berubah lagi mengikuti sistem.

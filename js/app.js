@@ -925,6 +925,60 @@ async function loadContent(id) {
   }
 }
 
+
+/* ---------- sidebar daftar materi ---------- */
+function lessonNomor(m, l) {
+  return `${modules.indexOf(m) + 1}.${l.order}`;
+}
+
+function sidebarHTML(m, aktif) {
+  const st = moduleStats(m);
+  const idxModul = modules.indexOf(m);
+  const berikutnya = modules[idxModul + 1];
+
+  const item = (l) => {
+    const done = lessonDone(l.id);
+    const buka = isLessonUnlocked(l.id);
+    const ini = aktif && l.id === aktif.id;
+    return `
+      <a class="cn-item ${done ? 'done' : ''} ${ini ? 'active' : ''} ${buka ? '' : 'locked'}"
+         href="${buka ? `#/lesson/${l.id}` : '#'}" ${buka ? '' : 'onclick="return false"'}>
+        <i class="cn-dot">${done ? '✓' : buka ? (ini ? '▸' : '') : '🔒'}</i>
+        <span class="cn-body">
+          <b>${esc(l.title)}</b>
+          <span>${lessonNomor(m, l)} · ${l.duration} menit${l.coding ? ' · coding' : ''}</span>
+        </span>
+      </a>`;
+  };
+
+  const ujian = m.exam ? `
+    <div class="cn-group">Ujian <span>${st.examPassed ? 'lulus' : st.examUnlocked ? 'siap' : 'terkunci'}</span></div>
+    <a class="cn-item ${st.examPassed ? 'done' : ''} ${st.examUnlocked ? '' : 'locked'}"
+       href="${st.examUnlocked ? `#/exam/${m.id}` : '#'}" ${st.examUnlocked ? '' : 'onclick="return false"'}>
+      <i class="cn-dot">${st.examPassed ? '✓' : st.examUnlocked ? '' : '🔒'}</i>
+      <span class="cn-body">
+        <b>${esc(m.exam.title)}</b>
+        <span>${m.exam.questionCount} soal + ${m.exam.coding.length} coding</span>
+      </span>
+    </a>` : '';
+
+  return `
+    <a class="cn-back" href="#/modules">← Kembali ke katalog</a>
+    <div class="cn-card">
+      <span class="cn-kicker">MODUL AKTIF</span>
+      <b>${m.icon} ${esc(m.title)}</b>
+      <div class="cn-meta"><span>${st.completed} / ${st.allTotal} materi</span><b>${st.percent}%</b></div>
+      <div class="progress"><i style="width:${st.percent}%"></i></div>
+    </div>
+
+    <div class="cn-group">Daftar materi <span>${st.done}/${m.lessons.length}</span></div>
+    <nav class="cn-list">${m.lessons.map(item).join('')}</nav>
+    ${ujian}
+    ${berikutnya && moduleUnlocked(berikutnya)
+      ? `<a class="cn-next" href="#/module/${berikutnya.id}">Modul berikutnya: ${esc(berikutnya.title)} →</a>`
+      : ''}`;
+}
+
 async function viewLesson(id) {
   const lesson = getLessonById(id);
   if (!lesson) return viewNotFound();
@@ -949,25 +1003,48 @@ async function viewLesson(id) {
 
   app.className = 'app wide';
   app.innerHTML = `
-    <a class="muted" href="#/module/${m.id}" style="font-size:.85rem">← ${esc(m.title)}</a>
-    <div class="lesson-head">
-      <span class="pill">${m.icon} Lesson ${lesson.order}/${m.lessons.length}</span>
-      <h1>${esc(lesson.title)}</h1>
-      <span class="pill">⏱ ${lesson.duration} menit</span>
-      ${lesson.runtime === 'pyodide-limited' ? '<span class="pill warn">runtime terbatas</span>' : ''}
-      <div class="spacer"></div>
-      <div class="steps" id="steps">
-        <button data-step="read">1 · Materi</button>
-        <button data-step="quiz">2 · Kuis</button>
-        ${hasCoding ? '<button data-step="code">3 · Live Coding</button>' : ''}
+    <div class="course-shell">
+      <aside class="course-nav" id="courseNav">${sidebarHTML(m, lesson)}</aside>
+      <div class="course-main">
+        <div class="lesson-head">
+          <button class="btn btn-sm cn-toggle" id="cnToggle">☰ Daftar materi</button>
+          <span class="pill">${lessonNomor(m, lesson)}</span>
+          <h1>${esc(lesson.title)}</h1>
+          <span class="pill">⏱ ${lesson.duration} menit</span>
+          ${lesson.runtime === 'pyodide-limited' ? '<span class="pill warn">runtime terbatas</span>' : ''}
+          <div class="spacer"></div>
+          <div class="steps" id="steps">
+            <button data-step="read">1 · Materi</button>
+            <button data-step="quiz">2 · Kuis</button>
+            ${hasCoding ? '<button data-step="code">3 · Live Coding</button>' : ''}
+          </div>
+        </div>
+        <div id="lessonBody"></div>
       </div>
-    </div>
-    <div id="lessonBody"></div>`;
+    </div>`;
+
+  /* laci sidebar di layar kecil */
+  const nav = $('#courseNav');
+  let scrim = null;
+  function tutupNav() {
+    nav.classList.remove('open');
+    if (scrim) { scrim.remove(); scrim = null; }
+  }
+  $('#cnToggle').onclick = () => {
+    nav.classList.add('open');
+    scrim = document.createElement('div');
+    scrim.className = 'cn-scrim';
+    scrim.onclick = tutupNav;
+    document.body.appendChild(scrim);
+  };
+  nav.addEventListener('click', (e) => { if (e.target.closest('a')) tutupNav(); });
 
   const body = $('#lessonBody');
 
   function syncSteps() {
     const p = Store.getLesson(id);
+    const sn = $('#courseNav');
+    if (sn) sn.innerHTML = sidebarHTML(m, lesson);
     $$('#steps button').forEach((b) => {
       const s = b.dataset.step;
       b.classList.toggle('active', s === step);
