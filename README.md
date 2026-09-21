@@ -9,8 +9,8 @@ Semua vanilla **HTML + CSS + JavaScript**. Tanpa build step, tanpa backend, siap
 
 ## ✨ Fitur
 
-- **71 lesson** dalam 12 modul + proyek akhir, semua berbahasa Indonesia
-- **69 tantangan live coding** + **343 soal kuis**, semuanya dinilai otomatis
+- **75 lesson** dalam 12 modul + proyek akhir, semua berbahasa Indonesia
+- **73 tantangan live coding** + **399 soal kuis**, semuanya dinilai otomatis
 - **Latihan mandiri** di dalam materi dengan jawaban yang bisa dibuka-tutup
 - **NumPy, pandas, dan scikit-learn jalan di browser** — dimuat otomatis saat lesson yang butuh dibuka
 - **Python asli di browser** lewat [Pyodide](https://pyodide.org) (CPython → WebAssembly), berjalan di Web Worker dengan timeout 15 detik
@@ -88,7 +88,7 @@ dan enak dibaca.
 |---|---|---|
 | M0 | Persiapan | 4 |
 | M1 | Fondasi | 11 |
-| M2 | Struktur Data & Fungsi | 7 |
+| M2 | Struktur Data & Fungsi | 11 |
 | M3 | Menengah | 5 |
 | M4 | Object-Oriented Programming | 6 |
 | M5 | Advance | 7 |
